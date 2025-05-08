@@ -18,5 +18,18 @@ This: envirinment.getProperty("JAVA_HOME")
 gives output C:\Java\jdk-17.0.7 when I run the application from IntelliJ, 
 which is strange since I changed the property to C:\Java\jdk-21.0.1
 
+### @ConfigurationProperties
+set of properties with prefix "accounts"
 
-
+result of GET
+{
+    "message": "Welcome to EazyBank accounts related local APIs",
+    "contactDetails": {
+        "name": "John Doe - Developer",
+        "email": "john@eazybank.com"
+},
+    "onCallSupport": [
+        "(555) 555-1234",
+        "(555) 523-1345"
+    ]
+}
