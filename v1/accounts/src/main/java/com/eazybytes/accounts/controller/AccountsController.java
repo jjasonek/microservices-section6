@@ -47,7 +47,7 @@ public class AccountsController {
     private String buildVersion;
 
     @Autowired
-    private Environment envirinment;
+    private Environment environment;
 
     @Autowired
     private AccountsContactInfoDto accountsContactInfoDto;
@@ -237,7 +237,7 @@ public class AccountsController {
     public ResponseEntity<String> getJavaVersion() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(envirinment.getProperty("JAVA_HOME"));
+                .body(environment.getProperty("JAVA_HOME"));
     }
 
     @Operation(
