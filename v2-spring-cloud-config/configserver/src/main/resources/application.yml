@@ -1,5 +1,13 @@
 server:
   port: 8071
+
 spring:
   application:
     name: configserver
+  profiles:
+    active: native  # to run in native mode. We do it always when using classpath approach.
+  cloud:
+    config:
+      server:
+        native: # because we have activated the native profile
+          search-locations: "classpath:/config"

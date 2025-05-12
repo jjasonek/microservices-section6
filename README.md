@@ -33,3 +33,44 @@ result of GET
         "(555) 523-1345"
     ]
 }
+
+
+
+## Configuration management v2-spring-cloud-config
+
+### classpath approach
+After start of the Configserver we can se properties from urls beginning with localhost:8071
+For example localhost:8071/accounts/prod gives:
+{
+    "name": "accounts",
+    "profiles": [
+    "prod"
+    ],
+    "label": null,
+    "version": null,
+    "state": null,
+    "propertySources": [
+        {
+            "name": "classpath:/config/accounts-prod.yml",
+            "source": {
+                "build.version": "1.0",
+                "accounts.message": "Welcome to EazyBank accounts related prod APIs",
+                "accounts.contactDetails.name": "Reine Aishwarya - Product Owner",
+                "accounts.contactDetails.email": "aishwarya@eazybank.com",
+                "accounts.onCallSupport[0]": "(453) 392-4829",
+                "accounts.onCallSupport[1]": "(236) 203-0384"
+            }
+        },
+        {
+            "name": "classpath:/config/accounts.yml",
+            "source": {
+                "build.version": "3.0",
+                "accounts.message": "Welcome to EazyBank accounts related local APIs",
+                "accounts.contactDetails.name": "John Doe - Developer",
+                "accounts.contactDetails.email": "john@eazybank.com",
+                "accounts.onCallSupport[0]": "(555) 555-1234",
+                "accounts.onCallSupport[1]": "(555) 523-1345"
+            }
+        }
+    ]
+}
