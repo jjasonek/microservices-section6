@@ -11,7 +11,7 @@ http://localhost:8090/swagger-ui/index.html,
 http://localhost:9000/swagger-ui/index.html.
 
 
-## Configuration management V1
+## Configuration management v1-springboot
 
 ### Environment
 This: envirinment.getProperty("JAVA_HOME")
