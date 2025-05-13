@@ -74,3 +74,10 @@ For example localhost:8071/accounts/prod gives:
         }
     ]
 }
+
+### Starting the accounts application with the qa profile:
+2025-05-13T15:08:16.595+02:00  INFO 14392 --- [accounts] [  restartedMain] c.e.accounts.AccountsApplication         : The following 1 profile is active: "qa"
+2025-05-13T15:08:16.643+02:00  INFO 14392 --- [accounts] [  restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+2025-05-13T15:08:16.643+02:00  INFO 14392 --- [accounts] [  restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=accounts, profiles=[default], label=null, version=null, state=null
+2025-05-13T15:08:16.643+02:00  INFO 14392 --- [accounts] [  restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+2025-05-13T15:08:16.643+02:00  INFO 14392 --- [accounts] [  restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=accounts, profiles=[qa], label=null, version=null, state=null
