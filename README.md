@@ -81,3 +81,14 @@ For example localhost:8071/accounts/prod gives:
 2025-05-13T15:08:16.643+02:00  INFO 14392 --- [accounts] [  restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=accounts, profiles=[default], label=null, version=null, state=null
 2025-05-13T15:08:16.643+02:00  INFO 14392 --- [accounts] [  restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
 2025-05-13T15:08:16.643+02:00  INFO 14392 --- [accounts] [  restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=accounts, profiles=[qa], label=null, version=null, state=null
+
+
+### Retrieving the properties from the Configserver I can see the following:
+2025-05-13T21:10:03.776+02:00  INFO 40280 --- [configserver] [nio-8071-exec-1] o.s.c.c.s.e.NativeEnvironmentRepository  : Adding property source: Config resource 'file [C:\Users\jijas\AppData\Local\Temp\config-repo-11059085055692324310\accounts.yml]' via location 'file:/C:/Users/jijas/AppData/Local/Temp/config-repo-11059085055692324310/'
+2025-05-13T21:10:03.778+02:00  WARN 40280 --- [configserver] [nio-8071-exec-1] o.s.c.c.s.e.CipherEnvironmentEncryptor   : Cannot decrypt key: accounts.contactDetails.email (class java.lang.UnsupportedOperationException: No decryption for FailsafeTextEncryptor. Did you configure the keystore correctly?)
+2025-05-13T21:10:04.309+02:00  WARN 40280 --- [configserver] [nio-8071-exec-2] o.s.c.c.s.e.EnvironmentController        : Error getting the Environment with name=.well-known profiles=appspecific label=com.chrome.devtools.json includeOrigin=false
+...
+Caused by: org.eclipse.jgit.api.errors.RefNotFoundException: Ref com.chrome.devtools.json cannot be resolved
+
+I think the reason is settings in the GitHub side.
+Like email in accounts-prod.yml 

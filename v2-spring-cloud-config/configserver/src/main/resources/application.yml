@@ -5,10 +5,17 @@ spring:
   application:
     name: configserver
   profiles:
-    active: native  # to run in native mode. We do it always when using classpath approach.
+#    active: native  # to run in native mode. We do it always when using classpath approach.
+    active: git
   cloud:
     config:
       server:
-        native: # because we have activated the native profile
+        git:
+          uri: https://github.com/eazybytes/eazybytes-config.git
+          default-label: main
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+#        native: # because we have activated the native profile
 #          search-locations: "classpath:/config"
-          search-locations: "file:///C://Training//Microservices//section6//v2-spring-cloud-config//configserver//src//main//resources//config"
+#          search-locations: "file:///C://Training//Microservices//section6//v2-spring-cloud-config//configserver//src//main//resources//config"
