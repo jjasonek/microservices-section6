@@ -38,7 +38,7 @@ result of GET
 
 ## Configuration management v2-spring-cloud-config
 
-### classpath approach
+## classpath approach
 After start of the Configserver we can se properties from urls beginning with localhost:8071
 For example localhost:8071/accounts/prod gives:
 {
