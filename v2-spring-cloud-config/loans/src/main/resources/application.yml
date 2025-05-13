@@ -1,6 +1,10 @@
 server:
   port: 8090
 spring:
+  application:
+    name: loans
+  profiles:
+    active: "prod"  # Default setting. This can also be set by the Configserver.
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
@@ -14,24 +18,5 @@ spring:
       database-platform: org.hibernate.dialect.H2Dialect
       ddl-auto: update
       show-sql: true
-  application:
-    name: loans
   config:
-    import:
-      - "application_qa.yml"
-      - "application_prod.yml"
-  profiles:
-    active:
-      - "qa"
-
-  build:
-    version: "3.0"
-
-  loans:
-    message: "Welcome to EazyBank loans related prod APIs"
-    contactDetails:
-      name: "Loaner Aishwarya - Product Owner"
-      email: "loaner@eazybank.com"
-    onCallSupport:
-      - (553) 392-5829
-      - (336) 203-1384
+    import: "optional:configserver:http://localhost:8071"

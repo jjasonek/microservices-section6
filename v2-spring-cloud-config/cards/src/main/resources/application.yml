@@ -1,6 +1,10 @@
 server:
   port: 9000
 spring:
+  application:
+    name: cards
+  profiles:
+    active: "prod"  # Default setting. This can also be set by the Configserver.
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
@@ -14,24 +18,5 @@ spring:
       database-platform: org.hibernate.dialect.H2Dialect
       ddl-auto: update
       show-sql: true
-  application:
-    name: cards
   config:
-    import:
-      - "application_qa.yml"
-      - "application_prod.yml"
-  profiles:
-    active:
-      - "qa"
-
-build:
-  version: "3.0"
-
-cards:
-  message: "Welcome to EazyBank cards related local APIs"
-  contactDetails:
-    name: "Carter Doe - Developer"
-    email: "carter@eazybank.com"
-  onCallSupport:
-    - (555) 555-2234
-    - (555) 523-2345
+    import: "optional:configserver:http://localhost:8071"
