@@ -11,7 +11,8 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/eazybytes/eazybytes-config.git
+#          uri: https://github.com/eazybytes/eazybytes-config.git
+          uri: https://github.com/jjasonek/microservices-eazybytes-config.git
           default-label: main
           timeout: 5
           clone-on-start: true
