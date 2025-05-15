@@ -94,7 +94,7 @@ I think the reason is settings in the GitHub side.
 Like email in accounts-prod.yml 
 
 
-## Refreshing the config properties
+## Refreshing the config properties using the refresh endpoint in actuator
 
 ### Now we cen see, our properties on the Config Server are updating.
 Like here: http://localhost:8071/accounts/prod
@@ -122,3 +122,36 @@ And the response is:
 2025-05-14T16:03:06.397+02:00  INFO 44180 --- [accounts] [nio-8080-exec-3] o.s.cloud.endpoint.RefreshEndpoint       : Refreshed keys : [config.client.version, accounts.message]
 
 
+## Refreshing the config properties using Spring Cloud Bus
+
+### Install/run RabbitMQ
+~$ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+...
+2025-05-15 12:10:34.297314+00:00 [info] <0.499.0> epmd monitor knows us, inter-node communication (distribution) port: 25672
+...
+2025-05-15 12:10:34.595369+00:00 [info] <0.216.0> Created user 'guest'
+2025-05-15 12:10:34.597655+00:00 [info] <0.216.0> Successfully set user tags for user 'guest' to [administrator]
+2025-05-15 12:10:34.600440+00:00 [info] <0.216.0> Successfully set permissions for user 'guest' in virtual host '/' to '.*', '.*', '.*'
+
+
+### After configuration, and after updating properties in the GitHub, call POST http://localhost:8080/actuator/bus-refresh 
+
+2025-05-15T15:21:31.289+02:00  INFO 34468 --- [configserver] [NisFliEpciFEA-1] o.s.cloud.bus.event.RefreshListener      : Received remote refresh request.
+2025-05-15T15:21:31.975+02:00  INFO 34468 --- [configserver] [nio-8071-exec-3] .c.s.e.MultipleJGitEnvironmentRepository : Fetched for remote main and found 1 updates
+
+2025-05-15T15:21:31.255+02:00  INFO 5552 --- [loans] [EyF9lw0xW9Qnw-1] o.s.cloud.bus.event.RefreshListener      : Received remote refresh request.
+2025-05-15T15:21:31.277+02:00  INFO 5552 --- [loans] [EyF9lw0xW9Qnw-1] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+2025-05-15T15:21:33.007+02:00  INFO 5552 --- [loans] [EyF9lw0xW9Qnw-1] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=loans, profiles=[default], label=null, version=94cb0196ceea47070c4210da0ed274dd8f50d885, state=
+2025-05-15T15:21:33.019+02:00  INFO 5552 --- [loans] [EyF9lw0xW9Qnw-1] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+2025-05-15T15:21:34.355+02:00  INFO 5552 --- [loans] [EyF9lw0xW9Qnw-1] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=loans, profiles=[prod], label=null, version=94cb0196ceea47070c4210da0ed274dd8f50d885, state=
+
+2025-05-15T15:21:31.257+02:00  INFO 13568 --- [cards] [aGZmXB9d0Z67Q-1] o.s.cloud.bus.event.RefreshListener      : Received remote refresh request.
+2025-05-15T15:21:31.280+02:00  INFO 13568 --- [cards] [aGZmXB9d0Z67Q-1] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+2025-05-15T15:21:32.549+02:00  INFO 13568 --- [cards] [aGZmXB9d0Z67Q-1] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=cards, profiles=[default], label=null, version=94cb0196ceea47070c4210da0ed274dd8f50d885, state=
+2025-05-15T15:21:32.562+02:00  INFO 13568 --- [cards] [aGZmXB9d0Z67Q-1] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+2025-05-15T15:21:33.461+02:00  INFO 13568 --- [cards] [aGZmXB9d0Z67Q-1] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=cards, profiles=[prod], label=null, version=94cb0196ceea47070c4210da0ed274dd8f50d885, state=
+
+2025-05-15T15:21:31.181+02:00  INFO 24392 --- [accounts] [io-8080-exec-10] o.s.cloud.bus.event.RefreshListener      : Received remote refresh request.
+2025-05-15T15:21:31.206+02:00  INFO 24392 --- [accounts] [io-8080-exec-10] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+2025-05-15T15:21:32.023+02:00  INFO 24392 --- [accounts] [io-8080-exec-10] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=accounts, profiles=[default], label=null, version=94cb0196ceea47070c4210da0ed274dd8f50d885, state=
+2025-05-15T15:21:32.039+02:00  INFO 24392 --- [accounts] [io-8080-exec-10] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
