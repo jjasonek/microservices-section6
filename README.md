@@ -92,3 +92,33 @@ Caused by: org.eclipse.jgit.api.errors.RefNotFoundException: Ref com.chrome.devt
 
 I think the reason is settings in the GitHub side.
 Like email in accounts-prod.yml 
+
+
+## Refreshing the config properties
+
+### Now we cen see, our properties on the Config Server are updating.
+Like here: http://localhost:8071/accounts/prod
+
+### To refresh properties for the microservices without restarting them 
+we need to call the actuator refresh endpoint: 
+POST http://localhost:8080/actuator/refresh for the accounts.
+
+And the response is:
+[
+    "config.client.version",
+    "accounts.message"
+]
+
+2025-05-14T16:03:04.606+02:00  INFO 30468 --- [configserver] [nio-8071-exec-6] o.s.c.c.s.e.NativeEnvironmentRepository  : Adding property source: Config resource 'file [C:\Users\jijas\AppData\Local\Temp\config-repo-2333009254686404261\accounts.yml]' via location 'file:/C:/Users/jijas/AppData/Local/Temp/config-repo-2333009254686404261/'
+2025-05-14T16:03:05.135+02:00  INFO 30468 --- [configserver] [nio-8071-exec-7] o.s.c.c.s.e.NativeEnvironmentRepository  : Adding property source: Config resource 'file [C:\Users\jijas\AppData\Local\Temp\config-repo-2333009254686404261\accounts-prod.yml]' via location 'file:/C:/Users/jijas/AppData/Local/Temp/config-repo-2333009254686404261/'
+2025-05-14T16:03:05.135+02:00  INFO 30468 --- [configserver] [nio-8071-exec-7] o.s.c.c.s.e.NativeEnvironmentRepository  : Adding property source: Config resource 'file [C:\Users\jijas\AppData\Local\Temp\config-repo-2333009254686404261\accounts.yml]' via location 'file:/C:/Users/jijas/AppData/Local/Temp/config-repo-2333009254686404261/'
+
+2025-05-14T16:03:04.058+02:00  INFO 44180 --- [accounts] [nio-8080-exec-3] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+2025-05-14T16:03:04.608+02:00  INFO 44180 --- [accounts] [nio-8080-exec-3] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=accounts, profiles=[default], label=null, version=082cd1ce7f42f9a5b0d918fb959d46729883a52d, state=
+2025-05-14T16:03:04.621+02:00  INFO 44180 --- [accounts] [nio-8080-exec-3] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+2025-05-14T16:03:05.137+02:00  INFO 44180 --- [accounts] [nio-8080-exec-3] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=accounts, profiles=[prod], label=null, version=082cd1ce7f42f9a5b0d918fb959d46729883a52d, state=
+2025-05-14T16:03:06.173+02:00  INFO 44180 --- [accounts] [nio-8080-exec-3] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-05-14T16:03:06.176+02:00  INFO 44180 --- [accounts] [nio-8080-exec-3] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-05-14T16:03:06.397+02:00  INFO 44180 --- [accounts] [nio-8080-exec-3] o.s.cloud.endpoint.RefreshEndpoint       : Refreshed keys : [config.client.version, accounts.message]
+
+
