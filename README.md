@@ -155,3 +155,28 @@ And the response is:
 2025-05-15T15:21:31.206+02:00  INFO 24392 --- [accounts] [io-8080-exec-10] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
 2025-05-15T15:21:32.023+02:00  INFO 24392 --- [accounts] [io-8080-exec-10] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=accounts, profiles=[default], label=null, version=94cb0196ceea47070c4210da0ed274dd8f50d885, state=
 2025-05-15T15:21:32.039+02:00  INFO 24392 --- [accounts] [io-8080-exec-10] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071
+
+
+
+## Refreshing the config properties using Spring Cloud Bus & Spring Cloud Monitor
+
+$ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+
+$ docker run --entrypoint /bin/sh --rm -it hookdeck/hookdeck-cli
+/ # hookdeck login --cli-key 3hmd3ov6j5838dkp5sn37dd2ufe4t2pnbvr5bsgp0lt9lblueo
+> The Hookdeck CLI is configured with your console Sandbox
+/ #  hookdeck listen host.docker.internal:8071 Source --cli-path /monitor
+
+Dashboard
+👉 Inspect and replay events: https://dashboard.hookdeck.com
+
+Sources
+🔌 Source URL: https://hkdk.events/7s76jlue5z64je
+
+Connections
+Source -> Source_to_cli-Source forwarding to /monitor
+
+> Ready! (^C to quit)
+2025-05-17 18:30:41 [200] POST http://host.docker.internal:8071/monitor | https://dashboard.hookdeck.com/cli/events/evt_bYThg0TEW5a2RQABoO
+2025-05-17 18:32:44 [200] POST http://host.docker.internal:8071/monitor | https://dashboard.hookdeck.com/cli/events/evt_CjhXXhNsK9j2igcpkQ
+2025-05-17 18:33:32 [200] POST http://host.docker.internal:8071/monitor | https://dashboard.hookdeck.com/cli/events/evt_nZicKl7QWRMkjpwhvR
