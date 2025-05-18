@@ -180,3 +180,25 @@ Source -> Source_to_cli-Source forwarding to /monitor
 2025-05-17 18:30:41 [200] POST http://host.docker.internal:8071/monitor | https://dashboard.hookdeck.com/cli/events/evt_bYThg0TEW5a2RQABoO
 2025-05-17 18:32:44 [200] POST http://host.docker.internal:8071/monitor | https://dashboard.hookdeck.com/cli/events/evt_CjhXXhNsK9j2igcpkQ
 2025-05-17 18:33:32 [200] POST http://host.docker.internal:8071/monitor | https://dashboard.hookdeck.com/cli/events/evt_nZicKl7QWRMkjpwhvR
+
+
+## Actuator API calls after adding health configuration in application.yml
+
+GET http://localhost:8071/actuator/health
+{
+    "status": "DOWN",
+    "groups": [
+        "liveness",
+        "readiness"
+    ]
+}
+
+http://localhost:8071/actuator/health/liveness
+{
+    "status": "UP"
+}
+
+http://localhost:8071/actuator/health/readiness
+{
+    "status": "UP"
+}
