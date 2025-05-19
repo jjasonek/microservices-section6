@@ -213,6 +213,53 @@ http://localhost:8071/actuator/health/readiness
 - In recent versions of Docker Compose it's no longer possible to mention 
   extends and depends_on directives in within a service.
 
+  
+## Build Docker Images
 
+### build
+docker login
+PS C:\Training\Microservices\section6\v2-spring-cloud-config\accounts> mvn compile jib:dockerBuild
+...
+[INFO] Built image to Docker daemon as jjasonek/accounts:s6
 
+PS C:\Training\Microservices\section6\v2-spring-cloud-config\cards> mvn compile jib:dockerBuild
+...
+[INFO] Built image to Docker daemon as jjasonek/cards:s6
 
+PS C:\Training\Microservices\section6\v2-spring-cloud-config\loans> mvn compile jib:dockerBuild
+...
+[INFO] Built image to Docker daemon as jjasonek/loans:s6
+
+PS C:\Training\Microservices\section6\v2-spring-cloud-config\configserver> mvn compile jib:dockerBuild
+...
+[INFO] Built image to Docker daemon as jjasonek/configserver:s6
+
+### check and clean
+docker images
+REPOSITORY                                 TAG            IMAGE ID       CREATED         SIZE
+jjasonek/accounts                          s4             a25eb3d0b593   2 weeks ago     503MB
+...
+rabbitmq                                   4-management   2b9b9a8fbf0e   4 weeks ago     275MB
+...
+jjasonek/loans                             s4             ff8c9def766e   45 years ago    310MB
+jjasonek/loans                             s6             f8cf2d3d4391   55 years ago    381MB
+jjasonek/cards                             s4             040ba03ca6b8   55 years ago    351MB
+jjasonek/accounts                          s6             fe157fd58338   55 years ago    381MB
+jjasonek/cards                             s6             cc1922012a1c   55 years ago    381MB
+jjasonek/configserver                      s6             521c6f9deccc   55 years ago    348MB
+
+docker rmi a25eb3d0b593 ff8c9def766e 040ba03ca6b8 2b9b9a8fbf0e
+
+docker images
+REPOSITORY                                 TAG       IMAGE ID       CREATED         SIZE
+...
+jjasonek/accounts                          s6        fe157fd58338   55 years ago    381MB
+jjasonek/cards                             s6        cc1922012a1c   55 years ago    381MB
+jjasonek/loans                             s6        f8cf2d3d4391   55 years ago    381MB
+jjasonek/configserver                      s6        521c6f9deccc   55 years ago    348MB
+
+### push to docker hub
+docker image push docker.io/jjasonek/accounts:s6
+docker image push docker.io/jjasonek/loans:s6
+docker image push docker.io/jjasonek/cards:s6
+docker image push docker.io/jjasonek/configserver:s6
