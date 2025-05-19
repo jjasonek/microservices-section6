@@ -1,4 +1,5 @@
 services:
+
   rabbit:
     image: rabbitmq:3.13-management
     hostname: rabbitmq    # container name
@@ -11,8 +12,9 @@ services:
       timeout: 5s
       retries: 10
       start_period: 5s
-    networks:
-      - eazybank
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
 
   configserver:
     image: "jjasonek/configserver:s6"
@@ -28,69 +30,43 @@ services:
       timeout: 5s
       retries: 10;
       start_period: 10s  # Wait for 10 seconds before checking the health of the container
-    deploy:
-      resources:
-        limits:
-          memory: 700m
-    networks:
-      - eazybank
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
 
   accounts:
     image: "jjasonek/accounts:s6"
     container_name: accounts-ms
     ports:
       - "8080:8080"
-    depends_on:
-      configserver:  # Only waits for initiation of startup. Does not wait for readiness. That's why we add the condition.
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 700m
-    networks:
-      - eazybank
     environment:
       SPRING_APPLICATION_NAME: "accounts"   # This is here because of bug in Spring Cloud Config Server version.
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_PROFILES_ACTIVE: "default"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
 
   loans:
     image: "jjasonek/loans:s6"
     container_name: loans-ms
     ports:
       - "8090:8090"
-    depends_on:
-      configserver:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 700m
-    networks:
-      - eazybank
     environment:
       SPRING_APPLICATION_NAME: "loans"   # This is here because of bug in Spring Cloud Config Server version.
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_PROFILES_ACTIVE: "default"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
 
   cards:
     image: "jjasonek/cards:s6"
     container_name: cards-ms
     ports:
       - "9000:9000"
-    depends_on:
-      configserver:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 700m
-    networks:
-      - eazybank
     environment:
       SPRING_APPLICATION_NAME: "cards"   # This is here because of bug in Spring Cloud Config Server version.
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_PROFILES_ACTIVE: "default"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
 networks:
   eazybank:
     driver: "bridge"

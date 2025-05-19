@@ -202,3 +202,17 @@ http://localhost:8071/actuator/health/readiness
 {
     "status": "UP"
 }
+
+
+## Optimization of docker-compose.yml
+
+- We move repeating stuff to common-config.yml.
+- We created 3 services: network-deploy-service is only for rabbit, 
+   microservice-base-config is for the configserver, 
+   microservice-configserver-config is for the rest of the microservices.
+- In recent versions of Docker Compose it's no longer possible to mention 
+  extends and depends_on directives in within a service.
+
+
+
+
