@@ -326,3 +326,12 @@ GET http://localhost:8071/actuator/health
 2025-05-19 19:08:59 [200] POST http://host.docker.internal:8071/monitor | https://dashboard.hookdeck.com/cli/events/evt_TR8MMJDiaVO9Zu1j9n
 
 docker compose down
+
+
+## Other environments
+
+### testing prod:
+cd ..\prod\
+docker compose up -d
+
+And the rest is the same.
