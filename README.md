@@ -263,3 +263,66 @@ docker image push docker.io/jjasonek/accounts:s6
 docker image push docker.io/jjasonek/loans:s6
 docker image push docker.io/jjasonek/cards:s6
 docker image push docker.io/jjasonek/configserver:s6
+
+
+## Testing
+
+docker compose up -d
+
+### hookdeck
+docker run --entrypoint /bin/sh --rm -it hookdeck/hookdeck-cli
+hookdeck login --cli-key 3hmd3ov6j5838dkp5sn37dd2ufe4t2pnbvr5bsgp0lt9lblueo
+hookdeck listen host.docker.internal:8071 Source --cli-path /monitor
+
+### verify
+docker ps
+CONTAINER ID   IMAGE                      COMMAND                  CREATED       STATUS                 PORTS                                                                                                         NAMES
+c1fadff7b116   hookdeck/hookdeck-cli      "/bin/sh"                2 hours ago   Up 2 hours                                                                                                                           charming_nightingale
+5313430b1982   jjasonek/cards:s6          "java -cp @/app/jib-…"   2 hours ago   Up 2 hours             0.0.0.0:9000->9000/tcp                                                                                        cards-ms
+9667346c2268   jjasonek/loans:s6          "java -cp @/app/jib-…"   2 hours ago   Up 2 hours             0.0.0.0:8090->8090/tcp                                                                                        loans-ms
+71e594011da1   jjasonek/accounts:s6       "java -cp @/app/jib-…"   2 hours ago   Up 2 hours             0.0.0.0:8080->8080/tcp                                                                                        accounts-ms
+0b0f176af625   jjasonek/configserver:s6   "java -cp @/app/jib-…"   2 hours ago   Up 2 hours (healthy)   0.0.0.0:8071->8071/tcp                                                                                        configserver-ms
+bd898d05e90c   rabbitmq:3.13-management   "docker-entrypoint.s…"   2 hours ago   Up 2 hours (healthy)   4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp   default-rabbit-1
+
+### Test updating config failed, because our configserver (and other microservices) tries to connect to rabbitmq on localhost. 
+But it is not true because we have all services in their containers.
+### hookdeck log:
+2025-05-19 18:26:26 [500] POST http://host.docker.internal:8071/monitor | https://dashboard.hookdeck.com/cli/events/evt_sOworaLS7nhqObTt0z
+
+docker logs -f 0b0f176af625
+
+### After overriding property SPRING_RABBITMQ_HOST: "rabbit" in common-config.yml:
+### confogserver log:
+2025-05-19T18:55:27.828Z  INFO 1 --- [configserver] [           main] o.s.c.s.binder.DefaultBinderFactory      : Creating binder: rabbit
+2025-05-19T18:55:27.828Z  INFO 1 --- [configserver] [           main] o.s.c.s.binder.DefaultBinderFactory      : Constructing binder child context for rabbit
+2025-05-19T18:55:27.976Z  INFO 1 --- [configserver] [           main] o.s.c.s.binder.DefaultBinderFactory      : Caching the binder: rabbit
+2025-05-19T18:55:28.000Z  INFO 1 --- [configserver] [           main] c.s.b.r.p.RabbitExchangeQueueProvisioner : declaring queue for inbound: springCloudBus.anonymous.ieYz8-1JQFygSoDQjkzNJg, bound to: springCloudBus
+2025-05-19T18:55:28.004Z  INFO 1 --- [configserver] [           main] o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [rabbit:5672]
+2025-05-19T18:55:28.041Z  INFO 1 --- [configserver] [           main] o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#ce19c86:0/SimpleConnection@5625ba2 [delegate=amqp://guest@172.20.0.2:5672/, localPort=56152]
+...
+2025-05-19T18:55:32.353Z  INFO 1 --- [configserver] [nio-8071-exec-2] o.s.c.c.s.e.NativeEnvironmentRepository  : Adding property source: Config resource 'file [/tmp/config-repo-3869145523301761123/cards.yml]' via location 'file:/tmp/config-repo-3869145523301761123/'
+2025-05-19T18:55:33.053Z  INFO 1 --- [configserver] [nio-8071-exec-4] o.s.c.c.s.e.NativeEnvironmentRepository  : Adding property source: Config resource 'file [/tmp/config-repo-3869145523301761123/loans.yml]' via location 'file:/tmp/config-repo-3869145523301761123/'
+2025-05-19T18:55:33.532Z  INFO 1 --- [configserver] [nio-8071-exec-3] o.s.c.c.s.e.NativeEnvironmentRepository  : Adding property source: Config resource 'file [/tmp/config-repo-3869145523301761123/accounts.yml]' via location 'file:/tmp/config-repo-3869145523301761123/'
+2025-05-19T18:57:14.899Z  INFO 1 --- [configserver] [nio-8071-exec-5] o.s.c.c.monitor.PropertyPathEndpoint     : Refresh for: accounts
+2025-05-19T18:57:14.933Z  INFO 1 --- [configserver] [nio-8071-exec-5] o.s.c.s.m.DirectWithAttributesChannel    : Channel 'configserver.springCloudBusOutput' has 1 subscriber(s).
+2025-05-19T18:57:14.967Z  INFO 1 --- [configserver] [nio-8071-exec-5] o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [rabbit:5672]
+2025-05-19T18:57:14.972Z  INFO 1 --- [configserver] [nio-8071-exec-5] o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory.publisher#5a94a35a:0/SimpleConnection@152603d0 [delegate=amqp://guest@172.20.0.2:5672/, localPort=36124]
+2025-05-19T18:57:14.979Z  INFO 1 --- [configserver] [nio-8071-exec-5] o.s.amqp.rabbit.core.RabbitAdmin         : Auto-declaring a non-durable, auto-delete, or exclusive Queue (springCloudBus.anonymous.ieYz8-1JQFygSoDQjkzNJg) durable:false, auto-delete:true, exclusive:true. It will be redeclared if the broker stops and is restarted while the connection factory is alive, but all messages will be lost.
+2025-05-19T18:57:14.996Z  INFO 1 --- [configserver] [nio-8071-exec-5] o.s.cloud.bus.event.RefreshListener      : Received remote refresh request.
+2025-05-19T18:57:14.997Z  INFO 1 --- [configserver] [nio-8071-exec-5] o.s.cloud.bus.event.RefreshListener      : Refresh not performed, the event was targeting accounts:**
+2025-05-19T18:57:15.819Z  INFO 1 --- [configserver] [nio-8071-exec-6] .c.s.e.MultipleJGitEnvironmentRepository : Fetched for remote main and found 1 updates
+2025-05-19T18:57:15.841Z  INFO 1 --- [configserver] [nio-8071-exec-6] o.s.c.c.s.e.NativeEnvironmentRepository  : Adding property source: Config resource 'file [/tmp/config-repo-3869145523301761123/accounts.yml]' via location 'file:/tmp/config-repo-3869145523301761123/'
+
+GET http://localhost:8071/actuator/health
+{
+    "status": "UP",
+    "groups": [
+        "liveness",
+        "readiness"
+    ]
+}
+
+### hookdeck log:
+2025-05-19 19:08:59 [200] POST http://host.docker.internal:8071/monitor | https://dashboard.hookdeck.com/cli/events/evt_TR8MMJDiaVO9Zu1j9n
+
+docker compose down
