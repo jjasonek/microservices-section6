@@ -28,7 +28,7 @@ services:
       test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
-      retries: 10;
+      retries: 10
       start_period: 10s  # Wait for 10 seconds before checking the health of the container
     extends:
       file: common-config.yml
